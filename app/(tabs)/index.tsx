@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { Colors } from '../../constants/Colors';
+import { useFuel } from '../../context/FuelContext';
 
 const styles = StyleSheet.create({
   container: {
