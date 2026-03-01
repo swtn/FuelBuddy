@@ -1,62 +1,90 @@
-import { StyleSheet, Text, View, Image } from "react-native";
-import { Link } from "expo-router";
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { Colors } from '../../constants/Colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: Colors.Background,
-    padding: 20,
   },
-  logo: {
-    fontSize: 70,
-    marginBottom: 20,
+  listContent: {
+    padding: 16,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: Colors.text,
-    marginVertical: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: Colors.textSecondary,
-    textAlign: "center",
-    marginBottom: 50,
-    lineHeight: 24,
-  },
-  button: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 25,
-    width: '100%',
+  itemContainer: {
+    backgroundColor: Colors.surface,
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    textAlign: 'center',
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
+  },
+  stationName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.text,
+  },
+  dateText: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+  },
+  ammountText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.primary,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    backgroundColor: Colors.primary,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 8,
+    elevation: 5,
   },
-  buttonText: {
+  addButtonText: {
     color: Colors.white,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 })
 
-export default function HomeScreen() {
+const DATA = [
+  {id: 1, date: '2026-03-01', amount: '250.00 PLN', station: 'Orlen', fuelType: 'Diesel'},
+  {id: 2, date: '2026-03-15', amount: '300.00 PLN', station: 'Shell', fuelType: 'Petrol'},
+  {id: 3, date: '2026-04-01', amount: '275.00 PLN', station: 'Lotos', fuelType: 'Diesel'},
+  {id: 4, date: '2026-04-15', amount: '320.00 PLN', station: 'BP', fuelType: 'Petrol'},
+]
+
+export default function JournalScreen() {
+  const renderItem = ({ item } : { item: typeof DATA[0] }) => (
+    <View style={styles.itemContainer}>
+    <View>
+      <Text style={styles.stationName}>{item.station}</Text>
+      <Text style={styles.dateText}>{item.date}</Text>
+    </View>
+    <Text style={styles.ammountText}>{item.amount}</Text>
+    </View>
+  ) 
+
   return (
-    //TUTAJ DODAC OBRAZEK PASUJACY DO STACJI BENZYNOWEj
     <View style={styles.container}>
-      <Text style={styles.title}>FuelBuddy</Text>
-      <Text style={styles.subtitle}>Twój dziennik kosztow paliwa i tras</Text>
-      <Link href="/(tabs)" style={styles.button} asChild>
-      <Text style={styles.buttonText}>Zacznij</Text>
-      </Link>
+      <FlatList
+        data={DATA}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.listContent}
+      />
+      <TouchableOpacity style={styles.addButton}>
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+ 
