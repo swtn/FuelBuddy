@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: Colors.TextPrimary,
+    color: Colors.text,
     marginVertical: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: Colors.TextSecondary,
+    color: Colors.textSecondary,
     textAlign: "center",
     marginBottom: 50,
     lineHeight: 24,
