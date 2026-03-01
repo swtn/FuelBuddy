@@ -54,33 +54,37 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
+  emptyText: {
+    textAlign: 'center',
+    color: Colors.textSecondary,
+    marginTop: 32,
+    fontSize: 16,
+  },
 })
 
-const DATA = [
-  {id: 1, date: '2026-03-01', amount: '250.00 PLN', station: 'Orlen', fuelType: 'Diesel'},
-  {id: 2, date: '2026-03-15', amount: '300.00 PLN', station: 'Shell', fuelType: 'Petrol'},
-  {id: 3, date: '2026-04-01', amount: '275.00 PLN', station: 'Lotos', fuelType: 'Diesel'},
-  {id: 4, date: '2026-04-15', amount: '320.00 PLN', station: 'BP', fuelType: 'Petrol'},
-]
 
 export default function JournalScreen() {
-  const renderItem = ({ item } : { item: typeof DATA[0] }) => (
+  const { state } = useFuel();
+
+  const renderItem = ({ item } : { item: typeof state.entries[0]}) => (
     <View style={styles.itemContainer}>
     <View>
-      <Text style={styles.stationName}>{item.station}</Text>
       <Text style={styles.dateText}>{item.date}</Text>
     </View>
-    <Text style={styles.ammountText}>{item.amount}</Text>
+    <Text style={styles.ammountText}>{item.amount.toFixed(2)} PLN</Text>
     </View>
   ) 
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={DATA}
+        data={state.entries}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContent}
+        ListEmptyComponent = {
+        <Text style={styles.emptyText}>Brak wpisów. Dodaj pierwszy!</Text>
+      }
       />
       <TouchableOpacity style={styles.addButton}>
         <Text style={styles.addButtonText}>+</Text>
