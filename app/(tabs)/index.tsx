@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { Colors } from '../../constants/Colors';
 import { useFuel } from '../../context/FuelContext';
+import { Link } from 'expo-router';
 
 const styles = StyleSheet.create({
   container: {
@@ -67,12 +68,15 @@ export default function JournalScreen() {
   const { state } = useFuel();
 
   const renderItem = ({ item } : { item: typeof state.entries[0]}) => (
-    <View style={styles.itemContainer}>
+    <Link href={`/entry/${item.id}`} asChild>
+    <TouchableOpacity style={styles.itemContainer}>
     <View>
+      <Text style={styles.stationName}>{item.station}</Text>
       <Text style={styles.dateText}>{item.date}</Text>
     </View>
     <Text style={styles.ammountText}>{item.amount.toFixed(2)} PLN</Text>
-    </View>
+    </TouchableOpacity>
+    </Link>
   ) 
 
   return (
@@ -86,9 +90,11 @@ export default function JournalScreen() {
         <Text style={styles.emptyText}>Brak wpisów. Dodaj pierwszy!</Text>
       }
       />
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
+      <Link href="/modal" style={styles.addButton} asChild>
+        <TouchableOpacity>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }

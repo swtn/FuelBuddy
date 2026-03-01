@@ -5,7 +5,9 @@ export type FuelEntry = {
     date: string;
     amount: number;
     price: number;
-    location: string;
+    station: string;
+    liters: number;
+    image: string | null;
 }
 
 type State = {
