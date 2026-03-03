@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'rea
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useFuel } from '../../context/FuelContext';
 import { Colors } from '../../constants/Colors';
-import { Ionicons } from '@expo/vector-icons'; // Upewnij się, że masz zainstalowane @expo/vector-icons
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EntryDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     flexDirection: 'row',
-    backgroundColor: '#FF3B30', // Czerwony kolor dla akcji usuwania
+    backgroundColor: '#FF3B30', 
     padding: 15,
     borderRadius: 8,
     justifyContent: 'center',
