@@ -1,28 +1,67 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import { Tabs } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons'
+import { Colors } from '../../constants/Colors.ts'
+import { Platform } from 'react-native'
 
 export default function TabLayout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: '#007AFF'}}>
+    <Tabs
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#f8f9fe',
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+        headerTitleStyle: {
+          fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif-medium',
+          fontWeight: '700',
+          fontSize: 20,
+          color: '#1e293b',
+        },
+        headerTitleAlign: 'center',
+        tabBarActiveTintColor: '#2563eb', 
+        tabBarInactiveTintColor: '#94a3b8',
+        tabBarStyle: {
+          backgroundColor: '#fff',
+          borderTopWidth: 0,
+          height: Platform.OS === 'ios' ? 90 : 70,
+          paddingBottom: Platform.OS === 'ios' ? 30 : 12,
+          paddingTop: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 5,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
+      }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dziennik',
-          tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
+          title: 'Tankowania',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? 'calendar' : 'calendar-outline'} 
+              size={24} 
+              color={color} 
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="map"
         options={{
           title: 'Mapa',
-          tabBarIcon: ({ color }) => <TabBarIcon name="map" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? 'map' : 'map-outline'} 
+              size={24} 
+              color={color} 
+            />
+          ),
         }}
       />
     </Tabs>
