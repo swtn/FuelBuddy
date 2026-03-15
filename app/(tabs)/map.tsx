@@ -29,6 +29,19 @@ export default function MapScreen() {
     })();
   }, []);
 
+  const mapStyle = [
+    {
+      "featureType": "poi",
+      "elementType": "labels",
+      "stylers": [{ "visibility": "off" }]
+    },
+    {
+      "featureType": "transit",
+      "elementType": "labels.icon",
+      "styelrs": [{ "visibility": "off" }]
+    }
+  ]
+
   if (!location && !errorMsg) {
     return (
       <View style={styles.center}>
@@ -52,6 +65,7 @@ export default function MapScreen() {
       <MapView
         style={styles.map}
         provider={PROVIDER_GOOGLE}
+        customMapStyle={mapStyle}
         showsUserLocation={true}
         showsMyLocationButton={false}
         initialRegion={{
