@@ -1,53 +1,46 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, {
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useReducer,
-} from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 
 export type FuelEntry = {
   id: string;
-  date: string;
-  amount: number;
-  price: number;
   station: string;
+  date: string;
   liters: number;
-  image: string | null;
+  pricePerLiter: number;
+  totalCost: number;
+  odometer: number;
+  imageUri?: string;
 };
 
 type State = {
   entries: FuelEntry[];
+  loading: boolean;
 };
 
 type Action =
+  | { type: "LOAD_ENTRIES"; payload: FuelEntry[] }
   | { type: "ADD_ENTRY"; payload: FuelEntry }
-  | { type: "DELETE_ENTRY"; payload: string }
-  | { type: "SET_ENTRIES"; payload: FuelEntry[] };
+  | { type: "DELETE_ENTRY"; payload: string };
 
-const initialState: State = {
-  entries: [],
-};
+const STORAGE_KEY = "@fuel_buddy_data";
 
-const STORAGE_KEY = "@fuel_entries";
-
-const FuelReducer = (state: State, action: Action): State => {
+const fuelReducer = (state: State, action: Action): State => {
   switch (action.type) {
+    case "LOAD_ENTRIES":
+      return { ...state, entries: action.payload, loading: false };
     case "ADD_ENTRY":
-      return {
-        ...state,
-        entries: [action.payload, ...state.entries],
+      const l = Number(action.payload.liters);
+      const p = Number(action.payload.pricePerLiter);
+      const calculatedTotal = l * p;
+      const newEntry = {
+        ...action.payload,
+        totalCost: calculatedTotal,
       };
+      return { ...state, entries: [newEntry, ...state.entries] };
     case "DELETE_ENTRY":
       return {
         ...state,
-        entries: state.entries.filter((entry) => entry.id !== action.payload),
-      };
-    case "SET_ENTRIES":
-      return {
-        ...state,
-        entries: action.payload,
+        entries: state.entries.filter((e) => e.id !== action.payload),
       };
     default:
       return state;
@@ -57,47 +50,40 @@ const FuelReducer = (state: State, action: Action): State => {
 const FuelContext = createContext<
   | {
       state: State;
-      addEntry: (entry: FuelEntry) => void;
-      deleteEntry: (id: string) => void;
+      addEntry: (entry: FuelEntry) => Promise<void>;
+      deleteEntry: (id: string) => Promise<void>;
     }
   | undefined
 >(undefined);
 
-export const FuelProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(FuelReducer, initialState);
+export const FuelProvider = ({ children }: { children: React.ReactNode }) => {
+  const [state, dispatch] = useReducer(fuelReducer, {
+    entries: [],
+    loading: true,
+  });
 
   useEffect(() => {
-    const loadInitialData = async () => {
+    const loadData = async () => {
       try {
-        const savedData = await AsyncStorage.getItem(STORAGE_KEY);
-        if (savedData) {
-          const parsedData = JSON.parse(savedData);
-          dispatch({ type: "SET_ENTRIES", payload: parsedData });
-        }
-      } catch (error) {
-        console.error("Błąd podczas odczytu danych: ", error);
+        const saved = await AsyncStorage.getItem(STORAGE_KEY);
+        if (saved)
+          dispatch({ type: "LOAD_ENTRIES", payload: JSON.parse(saved) });
+      } catch (e) {
+        console.error("Failed to load fuel entries", e);
       }
     };
-    loadInitialData();
+    loadData();
   }, []);
 
   useEffect(() => {
-    const saveData = async () => {
-      try {
-        const jsonValue = JSON.stringify(state.entries);
-        await AsyncStorage.setItem(STORAGE_KEY, jsonValue);
-      } catch (error) {
-        console.error("Błąd podczas zapisu danych: ", error);
-      }
-    };
-    saveData();
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state.entries));
   }, [state.entries]);
 
-  const addEntry = (entry: FuelEntry) => {
+  const addEntry = async (entry: FuelEntry) => {
     dispatch({ type: "ADD_ENTRY", payload: entry });
   };
 
-  const deleteEntry = (id: string) => {
+  const deleteEntry = async (id: string) => {
     dispatch({ type: "DELETE_ENTRY", payload: id });
   };
 
@@ -110,8 +96,6 @@ export const FuelProvider = ({ children }: { children: ReactNode }) => {
 
 export const useFuel = () => {
   const context = useContext(FuelContext);
-  if (!context) {
-    throw new Error("useFuel must be used within a FuelProvider");
-  }
+  if (!context) throw new Error("useFuel must be used within a FuelProvider");
   return context;
 };

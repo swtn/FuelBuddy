@@ -1,29 +1,39 @@
-// app/modal.tsx
-import { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '../constants/Colors';
-import * as ImagePicker from 'expo-image-picker';
-import { useFuel } from '../context/FuelContext';
+import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useFuel } from "../context/FuelContext";
 
 export default function ModalScreen() {
-  const [station, setStation] = useState('');
-  const [pricePerLiter, setPricePerLiter] = useState('');
-  const [liters, setLiters] = useState('');
-  const [image, setImage] = useState<string | null>(null);
-  
   const router = useRouter();
   const { addEntry } = useFuel();
 
+  const [station, setStation] = useState("");
+  const [liters, setLiters] = useState("");
+  const [pricePerLiter, setPricePerLiter] = useState("");
+  const [odometer, setOdometer] = useState("");
+  const [image, setImage] = useState<string | null>(null);
+
   const takePhoto = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    
-    if (permissionResult.granted === false) {
-      alert("Odmówiono dostępu do kamery!");
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Błąd", "Aplikacja potrzebuje uprawnień do aparatu");
       return;
     }
 
     const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
       quality: 0.5,
     });
 
@@ -32,126 +42,137 @@ export default function ModalScreen() {
     }
   };
 
-  const handleAddEntry = () => {
-    if (!station || !pricePerLiter || !liters) {
-      Alert.alert('Błąd', 'Uzupełnij stację, cenę za litr i ilość litrów!');
+  const handleSave = () => {
+    const l = parseFloat(liters);
+    const c = parseFloat(pricePerLiter);
+    const o = parseFloat(odometer);
+
+    if (!station || isNaN(l) || isNaN(c) || isNaN(o)) {
+      Alert.alert("Błąd", "Proszę wypełnić wszystkie pola poprawnie");
       return;
     }
 
-    const totalAmount = parseFloat(pricePerLiter) * parseFloat(liters);
-
-    const newEntry = {
+    addEntry({
       id: Date.now().toString(),
       station,
-      amount: totalAmount,
-      date: new Date().toISOString().split('T')[0],
-      price: parseFloat(pricePerLiter),
-      liters: parseFloat(liters),
-      image: image,
-    };
-    
-    addEntry(newEntry);
-    router.back();
-  }
+      liters: l,
+      pricePerLiter: c,
+      totalCost: l * c,
+      odometer: o,
+      date: new Date().toISOString(),
+      imageUri: image || undefined,
+    });
 
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/(tabs)");
+    }
+  };
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Dodaj nowy koszt</Text>
-      
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.label}>Stacja paliw</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nazwa stacji (np. Orlen)"
+        placeholder="np. Orlen, Shell"
         value={station}
         onChangeText={setStation}
       />
-      
+
+      <View style={styles.row}>
+        <View style={styles.flex1}>
+          <Text style={styles.label}>Litry (l)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="0.00"
+            keyboardType="numeric"
+            value={liters}
+            onChangeText={setLiters}
+          />
+        </View>
+        <View style={styles.flex1}>
+          <Text style={styles.label}>Cena za litr (PLN)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="0.00"
+            keyboardType="numeric"
+            value={pricePerLiter}
+            onChangeText={setPricePerLiter}
+          />
+        </View>
+      </View>
+
+      <Text style={styles.label}>Aktualny przebieg (km)</Text>
       <TextInput
         style={styles.input}
-        placeholder="Cena za litr (PLN)"
-        value={pricePerLiter}
-        onChangeText={setPricePerLiter}
-        keyboardType="numeric"
+        placeholder="np. 125400"
+        keyboardType="number-pad"
+        value={odometer}
+        onChangeText={setOdometer}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Ilość litrów"
-        value={liters}
-        onChangeText={setLiters}
-        keyboardType="numeric"
-      />
-
-      {image && <Image source={{ uri: image }} style={styles.imagePreview} />}
-      
       <TouchableOpacity style={styles.photoButton} onPress={takePhoto}>
+        <Ionicons name="camera" size={24} color="#2563eb" />
         <Text style={styles.photoButtonText}>
-          {image ? 'Zmień zdjęcie' : 'Zrób zdjęcie paragonu'}
+          {image ? "Zmień zdjęcie paragonu" : "Dodaj zdjęcie paragonu"}
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, styles.addButton]} onPress={handleAddEntry}>
-        <Text style={styles.buttonText}>Dodaj wpis</Text>
+      {image && <Image source={{ uri: image }} style={styles.previewImage} />}
+
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Zapisz tankowanie</Text>
       </TouchableOpacity>
-    </View>
-  )
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: Colors.Background,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.text,
-    marginBottom: 20,
+  container: { padding: 20, backgroundColor: "#fff", flexGrow: 1 },
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#64748b",
+    marginBottom: 8,
+    marginTop: 16,
   },
   input: {
-    backgroundColor: Colors.surface,
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 15,
-    fontSize: 16,
+    backgroundColor: "#f8f9fe",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#e2e8f0",
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 16,
   },
-  imagePreview: {
-    width: '100%',
-    height: 150,
-    borderRadius: 8,
-    marginBottom: 15,
-    resizeMode: 'cover',
-  },
+  row: { flexDirection: "row", gap: 12 },
+  flex1: { flex: 1 },
   photoButton: {
-    backgroundColor: Colors.primaryLight,
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
     borderWidth: 1,
-    borderColor: Colors.primary,
-    borderStyle: 'dashed',
+    borderColor: "#2563eb",
+    borderStyle: "dashed",
+    borderRadius: 12,
+    marginTop: 24,
+    backgroundColor: "#eff6ff",
   },
-  photoButtonText: {
-    color: Colors.primaryDark,
-    fontSize: 16,
-    fontWeight: '600',
+  photoButtonText: { marginLeft: 8, color: "#2563eb", fontWeight: "600" },
+  previewImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 12,
+    marginTop: 16,
+    resizeMode: "cover",
   },
-  button: {
-    backgroundColor: Colors.primary,
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  addButton: {
-    marginTop: 'auto',
+  saveButton: {
+    backgroundColor: "#2563eb",
+    padding: 18,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: "auto",
     marginBottom: 20,
   },
-  buttonText: {
-    color: Colors.white,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  saveButtonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
 });
