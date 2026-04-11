@@ -64,29 +64,33 @@ export default function JournalScreen() {
     });
 
     return (
-      <View style={styles.card}>
-        <View style={styles.cardIcon}>
-          <Ionicons name="car-outline" size={24} color="#2563eb" />
-        </View>
-        <View style={styles.cardInfo}>
-          <Text style={styles.cardStation}>{item.station}</Text>
-          <Text style={styles.cardDate}>
-            {formattedDate} • {item.odometer} km
-          </Text>
-        </View>
-        <View style={styles.cardAmount}>
-          <Text style={styles.cardPrice}>
-            {(Number(item.totalCost) || 0).toFixed(2)} PLN
-          </Text>
-          <Text style={styles.cardLiters}>{item.liters} l</Text>
-          <TouchableOpacity
-            onPress={() => handleDelete(item.id)}
-            style={{ marginTop: 8 }}
-          >
-            <Ionicons name="trash" size={20} color="#ef4444" />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <Link href={`/entry/${item.id}`} asChild>
+        <TouchableOpacity activeOpacity={0.7}>
+          <View style={styles.card}>
+            <View style={styles.cardIcon}>
+              <Ionicons name="car-outline" size={24} color="#2563eb" />
+            </View>
+            <View style={styles.cardInfo}>
+              <Text style={styles.cardStation}>{item.station}</Text>
+              <Text style={styles.cardDate}>
+                {formattedDate} • {item.odometer} km
+              </Text>
+            </View>
+            <View style={styles.cardAmount}>
+              <Text style={styles.cardPrice}>
+                {(Number(item.totalCost) || 0).toFixed(2)} PLN
+              </Text>
+              <Text style={styles.cardLiters}>{item.liters} l</Text>
+              <TouchableOpacity
+                onPress={() => handleDelete(item.id)}
+                style={{ marginTop: 8 }}
+              >
+                <Ionicons name="trash" size={20} color="#ef4444" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Link>
     );
   };
 
