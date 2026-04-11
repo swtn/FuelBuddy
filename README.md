@@ -37,7 +37,7 @@
 
 1. **Sklonuj repozytorium**:
    ```bash
-   git clone [https://github.com/TWOJA-NAZWA/fuel-buddy.git](https://github.com/TWOJA-NAZWA/fuel-buddy.git)
+   git clone https://github.com/swtn/fuel-buddy.git
    cd fuel-buddy
    ```
 2. **Zainstaluj Zalezności**
