@@ -36,17 +36,17 @@
 ## 🚀 Instalacja i Uruchomienie
 
 1. **Sklonuj repozytorium**:
-   ````bash
+   ```bash
    git clone [https://github.com/TWOJA-NAZWA/fuel-buddy.git](https://github.com/TWOJA-NAZWA/fuel-buddy.git)
-   cd fuel-buddy```
-   ````
+   cd fuel-buddy
+   ```
 2. **Zainstaluj Zalezności**
-   ````bash
-   npm install```
-   ````
+   ```bash
+   npm install
+   ```
 3. **Uruchom projekt**
-   ````bash
-   npx expo start```
-   ````
+   ```bash
+   npx expo start
+   ```
 
 **Autor: Daniel Świątek**
