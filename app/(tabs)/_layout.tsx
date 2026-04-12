@@ -29,6 +29,20 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="stats"
+        options={{ 
+          title: 'Statystyki', 
+          tabBarIcon: ({ color }) => <Ionicons name="stats-chart" size={24} color={color} /> 
+        }}
+      />
+      <Tabs.Screen
+        name="service"
+        options={{ 
+          title: 'Serwisowanie', 
+          tabBarIcon: ({ color }) => <Ionicons name="construct-outline" size={24} color={color} /> 
+        }}
+      />
+      <Tabs.Screen
         name="map"
         options={{
           title: "Mapa",

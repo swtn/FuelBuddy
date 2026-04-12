@@ -1,6 +1,6 @@
 import { useFuel } from "@/context/FuelContext";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function EntryDetailsScreen() {
@@ -32,7 +32,24 @@ export default function EntryDetailsScreen() {
         ]);
     };
 
+    const formattedDate = entry 
+        ? new Date(entry.date).toLocaleDateString("pl-PL", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        })
+        : "";
+
     return (
+        <>
+            <Stack.Screen
+                options={{
+                    headerTitle: entry ? `Tankowanie: ${formattedDate}` : "Szczegóły",
+                    headerTintColor: "#25663",
+                    headerTitleStyle: { fontWeight: 'bold' }
+                }}
+                />
+
         <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.stationName}>{entry.station}</Text>
@@ -71,6 +88,7 @@ export default function EntryDetailsScreen() {
                     <Text style={styles.deleteBtnText}>Usuń ten wpis</Text>
                 </TouchableOpacity>
         </ScrollView>
+        </>
     );
 }
 
