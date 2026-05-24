@@ -5,6 +5,8 @@ import { useState } from "react";
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -69,66 +71,84 @@ export default function ModalScreen() {
       router.replace("/(tabs)");
     }
   };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.label}>Stacja paliw</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="np. Orlen, Shell"
-        value={station}
-        onChangeText={setStation}
-      />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.keyboardContainer}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.label}>Stacja paliw</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="np. Orlen, Shell"
+          value={station}
+          onChangeText={setStation}
+        />
 
-      <View style={styles.row}>
-        <View style={styles.flex1}>
-          <Text style={styles.label}>Litry (l)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="0.00"
-            keyboardType="numeric"
-            value={liters}
-            onChangeText={setLiters}
-          />
+        <View style={styles.row}>
+          <View style={styles.flex1}>
+            <Text style={styles.label}>Litry (l)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="0.00"
+              keyboardType="numeric"
+              value={liters}
+              onChangeText={setLiters}
+            />
+          </View>
+          <View style={styles.flex1}>
+            <Text style={styles.label}>Cena za litr (PLN)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="0.00"
+              keyboardType="numeric"
+              value={pricePerLiter}
+              onChangeText={setPricePerLiter}
+            />
+          </View>
         </View>
-        <View style={styles.flex1}>
-          <Text style={styles.label}>Cena za litr (PLN)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="0.00"
-            keyboardType="numeric"
-            value={pricePerLiter}
-            onChangeText={setPricePerLiter}
-          />
-        </View>
-      </View>
 
-      <Text style={styles.label}>Aktualny przebieg (km)</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="np. 125400"
-        keyboardType="number-pad"
-        value={odometer}
-        onChangeText={setOdometer}
-      />
+        <Text style={styles.label}>Aktualny przebieg (km)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="np. 125400"
+          keyboardType="number-pad"
+          value={odometer}
+          onChangeText={setOdometer}
+        />
 
-      <TouchableOpacity style={styles.photoButton} onPress={takePhoto}>
-        <Ionicons name="camera" size={24} color="#2563eb" />
-        <Text style={styles.photoButtonText}>
-          {image ? "Zmień zdjęcie paragonu" : "Dodaj zdjęcie paragonu"}
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.photoButton} onPress={takePhoto}>
+          <Ionicons name="camera" size={24} color="#2563eb" />
+          <Text style={styles.photoButtonText}>
+            {image ? "Zmień zdjęcie paragonu" : "Dodaj zdjęcie paragonu"}
+          </Text>
+        </TouchableOpacity>
 
-      {image && <Image source={{ uri: image }} style={styles.previewImage} />}
+        {image && <Image source={{ uri: image }} style={styles.previewImage} />}
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Zapisz tankowanie</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveButtonText}>Zapisz tankowanie</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: "#fff", flexGrow: 1 },
+  keyboardContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  container: {
+    padding: 20,
+    backgroundColor: "#fff",
+    flexGrow: 1,
+  },
   label: {
     fontSize: 14,
     fontWeight: "600",
@@ -143,6 +163,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     fontSize: 16,
+    color: "#1e293b",
   },
   row: { flexDirection: "row", gap: 12 },
   flex1: { flex: 1 },
@@ -171,7 +192,7 @@ const styles = StyleSheet.create({
     padding: 18,
     borderRadius: 12,
     alignItems: "center",
-    marginTop: "auto",
+    marginTop: 32,
     marginBottom: 20,
   },
   saveButtonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
