@@ -30,11 +30,11 @@ export default function RootLayout() {
   useEffect(() => {
     if (!initialized) return;
 
-    const inAuthGroup = segments[0] === "(tabs)";
+    const isPublicRoute = segments[0] === "auth";
 
-    if (session && !inAuthGroup) {
+    if (session && isPublicRoute) {
       router.replace("/(tabs)");
-    } else if (!session && inAuthGroup) {
+    } else if (!session && !isPublicRoute) {
       router.replace("/auth");
     }
   }, [session, initialized, segments]);
@@ -44,6 +44,14 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="auth" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="modal"
+          options={{
+            presentation: "modal",
+            headerShown: true,
+            title: "Dodaj wpis",
+          }}
+        />
       </Stack>
     </FuelProvider>
   );

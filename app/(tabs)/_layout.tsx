@@ -30,16 +30,20 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="stats"
-        options={{ 
-          title: 'Statystyki', 
-          tabBarIcon: ({ color }) => <Ionicons name="stats-chart" size={24} color={color} /> 
+        options={{
+          title: "Statystyki",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="stats-chart" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="service"
-        options={{ 
-          title: 'Serwisowanie', 
-          tabBarIcon: ({ color }) => <Ionicons name="construct-outline" size={24} color={color} /> 
+        options={{
+          title: "Serwisowanie",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="construct-outline" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -48,6 +52,20 @@ export default function TabsLayout() {
           title: "Mapa",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Ustawienia",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "settings" : "settings-outline"}
+              size={24}
+              color={color}
+            />
           ),
         }}
       />

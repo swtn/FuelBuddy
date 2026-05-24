@@ -1,6 +1,6 @@
 import { FuelEntry, useFuel } from "@/context/FuelContext";
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React, { useMemo } from "react";
 import {
   Alert,
@@ -13,6 +13,7 @@ import {
 
 export default function JournalScreen() {
   const { state, deleteEntry } = useFuel();
+  const router = useRouter();
 
   const handleDelete = (id: string) => {
     Alert.alert("Usuń wpis", "Czy na pewno chcesz usunąć ten wpis?", [
@@ -127,11 +128,13 @@ export default function JournalScreen() {
         }
       />
 
-      <Link href="/modal" asChild>
-        <TouchableOpacity style={styles.fab} activeOpacity={0.8}>
-          <Ionicons name="add" size={30} color="white" />
-        </TouchableOpacity>
-      </Link>
+      <TouchableOpacity
+        style={styles.fab}
+        activeOpacity={0.8}
+        onPress={() => router.push("/modal")}
+      >
+        <Ionicons name="add" size={30} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }

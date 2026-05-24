@@ -3,13 +3,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function AuthScreen() {
@@ -46,7 +46,7 @@ export default function AuthScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="gas-station" size={80} color="#2563eb" />
+        <Ionicons name="water" size={80} color="#2563eb" />
         <Text style={styles.title}>FuelBuddy</Text>
         <Text style={styles.subtitle}>Twoje paliwo pod kontrolą</Text>
       </View>
