@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useEffect, useReducer, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 
 export type FuelEntry = {
   id: string;
@@ -18,14 +24,17 @@ export interface VehicleInfo {
   techReviewDate: string;
 }
 
-type State = {
+export type State = {
   entries: FuelEntry[];
   vehicleInfo: VehicleInfo;
   loading: boolean;
 };
 
-type Action =
-  | { type: "LOAD_DATA"; payload: { entries: FuelEntry[]; vehicleInfo: VehicleInfo } }
+export type Action =
+  | {
+      type: "LOAD_DATA";
+      payload: { entries: FuelEntry[]; vehicleInfo: VehicleInfo };
+    }
   | { type: "ADD_ENTRY"; payload: FuelEntry }
   | { type: "DELETE_ENTRY"; payload: string }
   | { type: "UPDATE_VEHICLE_INFO"; payload: VehicleInfo }
@@ -34,17 +43,17 @@ type Action =
 const initialVehicleInfo: VehicleInfo = {
   nextServiceKm: 15000,
   lastOilChangeKm: 0,
-  techReviewDate: new Date().toISOString().split('T')[0],
+  techReviewDate: new Date().toISOString().split("T")[0],
 };
 
-const fuelReducer = (state: State, action: Action): State => {
+export const fuelReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "LOAD_DATA":
       return {
         ...state,
         entries: action.payload.entries,
         vehicleInfo: action.payload.vehicleInfo,
-        loading: false
+        loading: false,
       };
     case "ADD_ENTRY":
       return { ...state, entries: [action.payload, ...state.entries] };
@@ -64,11 +73,11 @@ const fuelReducer = (state: State, action: Action): State => {
 
 const FuelContext = createContext<
   | {
-    state: State;
-    addEntry: (entry: FuelEntry) => Promise<void>;
-    deleteEntry: (id: string) => Promise<void>;
-    updateVehicleInfo: (info: VehicleInfo) => Promise<void>;
-  }
+      state: State;
+      addEntry: (entry: FuelEntry) => Promise<void>;
+      deleteEntry: (id: string) => Promise<void>;
+      updateVehicleInfo: (info: VehicleInfo) => Promise<void>;
+    }
   | undefined
 >(undefined);
 
@@ -83,27 +92,37 @@ export const FuelProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const checkInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.user) {
         setUserId(session.user.id);
         fetchUserData(session.user.id);
       } else {
         setUserId(null);
-        dispatch({ type: "LOAD_DATA", payload: { entries: [], vehicleInfo: initialVehicleInfo } });
+        dispatch({
+          type: "LOAD_DATA",
+          payload: { entries: [], vehicleInfo: initialVehicleInfo },
+        });
       }
     };
 
     checkInitialSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUserId(session.user.id);
-        fetchUserData(session.user.id);
-      } else {
-        setUserId(null);
-        dispatch({ type: "LOAD_DATA", payload: { entries: [], vehicleInfo: initialVehicleInfo } });
-      }
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          setUserId(session.user.id);
+          fetchUserData(session.user.id);
+        } else {
+          setUserId(null);
+          dispatch({
+            type: "LOAD_DATA",
+            payload: { entries: [], vehicleInfo: initialVehicleInfo },
+          });
+        }
+      },
+    );
 
     return () => {
       authListener.subscription.unsubscribe();
@@ -166,7 +185,8 @@ export const FuelProvider = ({ children }: { children: React.ReactNode }) => {
     if (!userId) return;
 
     try {
-      const calculatedTotal = Number(entry.liters) * Number(entry.pricePerLiter);
+      const calculatedTotal =
+        Number(entry.liters) * Number(entry.pricePerLiter);
 
       const { data, error } = await supabase
         .from("entries")
@@ -227,14 +247,12 @@ export const FuelProvider = ({ children }: { children: React.ReactNode }) => {
     if (!userId) return;
 
     try {
-      const { error } = await supabase
-        .from("vehicle_info")
-        .upsert({
-          user_id: userId,
-          next_service_km: Number(info.nextServiceKm),
-          last_oil_change_km: Number(info.lastOilChangeKm),
-          tech_review_date: info.techReviewDate,
-        });
+      const { error } = await supabase.from("vehicle_info").upsert({
+        user_id: userId,
+        next_service_km: Number(info.nextServiceKm),
+        last_oil_change_km: Number(info.lastOilChangeKm),
+        tech_review_date: info.techReviewDate,
+      });
 
       if (error) throw error;
 
@@ -246,7 +264,9 @@ export const FuelProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <FuelContext.Provider value={{ state, addEntry, deleteEntry, updateVehicleInfo }}>
+    <FuelContext.Provider
+      value={{ state, addEntry, deleteEntry, updateVehicleInfo }}
+    >
       {children}
     </FuelContext.Provider>
   );
