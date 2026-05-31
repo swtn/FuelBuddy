@@ -1,9 +1,9 @@
 import {
-    Action,
-    FuelEntry,
-    fuelReducer,
-    State,
-    VehicleInfo,
+  Action,
+  FuelEntry,
+  fuelReducer,
+  State,
+  VehicleInfo,
 } from "@/context/FuelContext";
 
 describe("FuelBuddy - testy Reducera", () => {

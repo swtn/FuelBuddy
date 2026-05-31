@@ -21,11 +21,16 @@ jest.mock("expo-router", () => ({
   }),
 }));
 
-jest.spyOn(Alert, "alert");
+jest.mock("@expo/vector-icons", () => ({
+  Ionicons: "Icon",
+  FontAwesome: "Icon",
+  MaterialIcons: "Icon",
+}));
 
 describe("FuelBuddy — Ekran Formularza Tankowania (ModalScreen)", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(Alert, "alert");
   });
 
   it("powinien wyświetlić komunikat błędu, jeśli użytkownik spróbuje zapisać niekompletny formularz", () => {

@@ -46,7 +46,7 @@ export default function TabsLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/*  <Tabs.Screen
         name="map"
         options={{
           title: "Mapa",
@@ -54,7 +54,7 @@ export default function TabsLayout() {
             <Ionicons name="map" size={size} color={color} />
           ),
         }}
-      />
+      />*/}
       <Tabs.Screen
         name="settings"
         options={{
