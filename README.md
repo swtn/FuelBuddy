@@ -12,7 +12,7 @@ FuelBuddy to nowoczesna aplikacja mobilna stworzona w architekturze **React Nati
 
 ---
 
-## ⚡ Szybki Start (Uruchomienie w mniej niż 5 minut)
+## ⚡ Szybki Start
 
 Postępuj zgodnie z poniższymi krokami, aby błyskawicznie postawić lokalne środowisko deweloperskie:
 
@@ -21,7 +21,7 @@ Postępuj zgodnie z poniższymi krokami, aby błyskawicznie postawić lokalne ś
 Otwórz terminal i wykonaj następujące polecenia:
 
 ```bash
-git clone [https://github.com/TWOJ-LOGIN/fuel-buddy.git](https://github.com/TWOJ-LOGIN/fuel-buddy.git)
+git clone [https://github.com/swtn/fuel-buddy.git](https://github.com/TWOJ-LOGIN/fuel-buddy.git)
 cd fuel-buddy
 npm install
 ```
@@ -31,7 +31,11 @@ npm install
 Utwórz plik o nazwie .env w głównym katalogu projektu i wklej do niego parametry połączenia ze swoją instancją Supabase:
 
 ```bash
-PLACEHOLDER
+# Adres URL Twojego projektu Supabase
+EXPO_PUBLIC_SUPABASE_URL=
+
+# Publiczny klucz anonimowy do autoryzacji zapytań API
+EXPO_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
 ### 3. Uruchom serwer
@@ -94,11 +98,9 @@ Lista Funkcjonalności
 
 3. Analityka Spalania: Automatyczny algorytm wyliczający ekonomię jazdy na podstawie różnic przebiegów pomiędzy kolejnymi wpisami.
 
-4. Skaner Paragonów: Integracja z aparatem fotograficznym w celu lokalnego przechowywania dokumentów fiskalnych związanych z pojazdem.
+4. Zdjęcia Paragonów: Integracja z aparatem fotograficznym w celu lokalnego przechowywania dokumentów fiskalnych związanych z pojazdem.
 
 5. Panel Powiadomień: Monitorowanie progów serwisowych (wymiana oleju, termin ważności badania technicznego).
-
-6. Lokalizator Stacji: Interaktywna mapa pobierająca współrzędne GPS telefonu i nanosząca na mapę customowe pinezki reprezentujące stacje benzynowe w promieniu 5 kilometrów.
 
 ##### PROJEKT ZALICZENIOWY Z PRZEDMIOTU JĘZYKI PROGRAMOWANIA URZĄDZEŃ MOBILNYCH
 

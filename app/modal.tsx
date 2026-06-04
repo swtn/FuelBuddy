@@ -44,6 +44,37 @@ export default function ModalScreen() {
     }
   };
 
+  const pickFromGallery = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Błąd", "Aplikacja potrzebuje uprawnień do galerii zdjęć");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const handlePhotoPress = () => {
+    Alert.alert(
+      "Wybierz źródło",
+      "W jaki sposób chcesz dodać zdjęcie paragonu?",
+      [
+        { text: "Zrób zdjęcie (Aparat)", onPress: takePhoto },
+        { text: "Wybierz z galerii", onPress: pickFromGallery },
+        { text: "Anuluj", style: "cancel" },
+      ],
+      { cancelable: true },
+    );
+  };
+
   const handleSave = () => {
     const l = parseFloat(liters);
     const c = parseFloat(pricePerLiter);
@@ -122,7 +153,7 @@ export default function ModalScreen() {
           onChangeText={setOdometer}
         />
 
-        <TouchableOpacity style={styles.photoButton} onPress={takePhoto}>
+        <TouchableOpacity style={styles.photoButton} onPress={handlePhotoPress}>
           <Ionicons name="camera" size={24} color="#2563eb" />
           <Text style={styles.photoButtonText}>
             {image ? "Zmień zdjęcie paragonu" : "Dodaj zdjęcie paragonu"}

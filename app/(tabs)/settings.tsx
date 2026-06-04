@@ -1,30 +1,17 @@
-import { useFuel } from "@/context/FuelContext";
 import { supabase } from "@/lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
-export default function SettingsScreen() {
-  const { state, updateVehicleInfo } = useFuel();
+export default function SettingScreen() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
-
-  const [nextService, setNextService] = useState(
-    state.vehicleInfo.nextServiceKm.toString(),
-  );
-  const [lastOil, setLastOil] = useState(
-    state.vehicleInfo.lastOilChangeKm.toString(),
-  );
-  const [techReview, setTechReview] = useState(
-    state.vehicleInfo.techReviewDate,
-  );
 
   useEffect(() => {
     async function fetchUser() {
@@ -35,30 +22,10 @@ export default function SettingsScreen() {
         setUserEmail(user.email ?? null);
       }
     }
-    fetchUser();
   }, []);
 
-  useEffect(() => {
-    setNextService(state.vehicleInfo.nextServiceKm.toString());
-    setLastOil(state.vehicleInfo.lastOilChangeKm.toString());
-    setTechReview(state.vehicleInfo.techReviewDate);
-  }, [state.vehicleInfo]);
-
-  const handleSaveSettings = async () => {
-    try {
-      await updateVehicleInfo({
-        nextServiceKm: parseInt(nextService) || 0,
-        lastOilChangeKm: parseInt(lastOil) || 0,
-        techReviewDate: techReview,
-      });
-      Alert.alert("Sukces", "Ustawienia zostały zapisane pomyślnie!");
-    } catch (error) {
-      Alert.alert("Błąd", "Nie udało się zapisać ustawień.");
-    }
-  };
-
   const handleLogout = () => {
-    Alert.alert("Wylogowanie", "Czy na pewno chcesz się wylogować?", [
+    Alert.alert("Wylogowywane", "Czy na pewno chcesz się wylogować", [
       { text: "Anuluj", style: "cancel" },
       {
         text: "Wyloguj",
@@ -72,6 +39,22 @@ export default function SettingsScreen() {
         },
       },
     ]);
+  };
+
+  const handleAboutApp = () => {
+    Alert.alert(
+      "O aplikacji",
+      "FuelBuddy V1.0.0\n\nTwoja osobista aplikacja do zarządzania wydatkami na paliwo.\n\nStworzono w ramach projektu zaliczeniowego",
+      [{ text: "Zamknij" }],
+    );
+  };
+
+  const handlePrivacyPolicy = () => {
+    Alert.alert(
+      "Polityka Prywatności",
+      "Twoje dane logowania oraz wszystkie wpisy dotyczące kosztów tankowania są bezpiecznie szyfrowane i przechowywane w dedykowanej bazie danych Supabase. Aplikacja nie udostępnia Twoich danych podmiotom trzecim.",
+      [{ text: "Akceptuję" }],
+    );
   };
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -91,50 +74,47 @@ export default function SettingsScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Ustawienia pojazdu</Text>
+        <Text style={styles.sectionTitle}>Informacje i pomoc</Text>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Następny serwis (km)</Text>
-          <TextInput
-            style={styles.input}
-            value={nextService}
-            onChangeText={setNextService}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Ostatnia wymiana oleju (km)</Text>
-          <TextInput
-            style={styles.input}
-            value={lastOil}
-            onChangeText={setLastOil}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Data przeglądu technicznego</Text>
-          <TextInput
-            style={styles.input}
-            value={techReview}
-            onChangeText={setTechReview}
-            placeholder="RRRR-MM-DD"
-          />
-        </View>
+        <TouchableOpacity style={styles.settingRow} onPress={handleAboutApp}>
+          <View style={styles.settingRowLeft}>
+            <Ionicons
+              name="information-circle-outline"
+              size={22}
+              color="#475569"
+            />
+            <Text style={styles.settingRowText}>O Aplikacji</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color="#94a3b8" />
+        </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.saveButton}
-          onPress={handleSaveSettings}
+          style={styles.settingRow}
+          onPress={handlePrivacyPolicy}
         >
-          <Ionicons
-            name="save-outline"
-            size={20}
-            color="white"
-            style={{ marginRight: 8 }}
-          />
-          <Text style={styles.saveButtonText}>Zapisz ustawienia</Text>
+          <View style={styles.settingRowLeft}>
+            <Ionicons
+              name="shield-checkmark-outline"
+              size={22}
+              color="#475569"
+            />
+            <Text style={styles.settingRowText}>Polityka prywatności</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color="#94a3b8" />
         </TouchableOpacity>
+
+        <View
+          style={[
+            styles.settingRow,
+            { borderBottomWidth: 0, paddingBottom: 4 },
+          ]}
+        >
+          <View style={styles.settingRowLeft}>
+            <Ionicons name="git-branch-outline" size={22} color="#475569" />
+            <Text style={styles.settingRowText}>Wersja aplikacji</Text>
+          </View>
+          <Text style={styles.versionText}>1.0.0</Text>
+        </View>
       </View>
 
       <View style={styles.logoutSection}>
@@ -206,37 +186,28 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#1e293b",
   },
-  inputGroup: {
-    marginBottom: 15,
+  settingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f1f5f9",
   },
-  label: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#475569",
-    marginBottom: 6,
+  settingRowLeft: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  input: {
-    backgroundColor: "#f8f9fe",
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
-    borderRadius: 12,
-    padding: 12,
+  settingRowText: {
     fontSize: 16,
     color: "#1e293b",
+    marginLeft: 12,
+    fontWeight: "500",
   },
-  saveButton: {
-    backgroundColor: "#2563eb",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 14,
-    borderRadius: 12,
-    marginTop: 10,
-  },
-  saveButtonText: {
-    color: "white",
+  versionText: {
     fontSize: 16,
-    fontWeight: "600",
+    color: "#94a3b8",
+    fontWeight: "500",
   },
   logoutSection: {
     marginBottom: 40,
