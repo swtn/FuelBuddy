@@ -1,3 +1,23 @@
+jest.mock("@/lib/supabase", () => ({
+  supabase: {
+    auth: {
+      getSession: jest.fn(() =>
+        Promise.resolve({ data: { session: null }, error: null }),
+      ),
+      onAuthStateChange: jest.fn(() => ({
+        data: { subscription: { unsubscribe: jest.fn() } },
+      })),
+    },
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          order: jest.fn(() => Promise.resolve({ data: [], error: null })),
+        })),
+      })),
+    })),
+  },
+}));
+
 import {
   Action,
   FuelEntry,

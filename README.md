@@ -6,9 +6,21 @@ FuelBuddy to nowoczesna aplikacja mobilna stworzona w architekturze **React Nati
 
 ## 📱 Prezentacja Interfejsu (UI/UX)
 
-|                                                        Ekran Główny & Dziennik                                                         |                                                    Dodawanie Wpisu z Aparatem                                                    |                                              Mapa Stacji (Prawdziwe API)                                               |
-| :------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
-| ![Dziennik Tankowań](https://via.placeholder.com/250x500.png?text=GIF+Dziennik+Tankowan) <br> _Miejsce na Twój GIF (np. dziennik.gif)_ | ![Dodawanie Wpisu](https://via.placeholder.com/250x500.png?text=GIF+Dodawanie+Wpisu) <br> _Miejsce na Twój GIF (np. aparat.gif)_ | ![Mapa Stacji](https://via.placeholder.com/250x500.png?text=GIF+Mapa+Stacji) <br> _Miejsce na Twój GIF (np. mapa.gif)_ |
+### Część 1: Autentykacja i Zarządzanie Tankowaniami
+
+|                                                          Ekran Logowania                                                           |                                                      Dziennik Tankowań                                                       |                                                           Dodawanie Nowego Wpisu                                                           |
+| :--------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                            ![Ekran Logowania](/assets/images/login.jpg)                                            |                                        ![Dziennik Tankowań](/assets/images/fuel.jpg)                                         |                                                ![Dodawanie Wpisu](/assets/images/modal.jpg)                                                |
+| **Opis Funkcji:**<br>Czysty i minimalistyczny ekran logowania użytkownika z opcją szybkiego przejścia do rejestracji nowego konta. | **Opis Funkcji:**<br>Główny pulpit z podsumowaniem wydatków, średnim spalaniem oraz listą wpisów z możliwością ich usuwania. | **Opis Funkcji:**<br>Intuicyjny formularz wprowadzania danych o tankowaniu (stacja, litry, cena) wraz z opcją załączenia zdjęcia paragonu. |
+
+### Część 2: Analityka, Status Pojazdu i Profil
+
+|                                                         Statystyki i Wykresy                                                          |                                                             Serwisowanie & Status                                                             |                                                            Ustawienia Aplikacji                                                             |
+| :-----------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                ![Statystyki](/assets/images/stats.jpg)                                                |                                                 ![Status Pojazdu](/assets/images/vehicle.jpg)                                                 |                                                 ![Ustawienia](/assets/images/settings.jpg)                                                  |
+| **Opis Funkcji:**<br>Wizualizacja trendów cenowych paliwa oraz objętości tankowań na interaktywnych wykresach liniowych i słupkowych. | **Opis Funkcji:**<br>Monitorowanie aktualnego przebiegu, odliczanie kilometrów do serwisu olejowego oraz przypomnienie o badaniu technicznym. | **Opis Funkcji:**<br>Zarządzanie profilem zalogowanego użytkownika, dostęp do polityki prywatności oraz bezpieczne wylogowanie z aplikacji. |
+
+---
 
 ---
 
