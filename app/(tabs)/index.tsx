@@ -76,6 +76,24 @@ export default function JournalScreen() {
               <Text style={styles.cardDate}>
                 {formattedDate} • {item.odometer} km
               </Text>
+
+              <View style={styles.syncContainer}>
+                {item.synced ? (
+                  <View style={styles.syncBadge}>
+                    <Ionicons name="cloud-done" size={12} color="#10b981" />
+                    <Text style={[styles.syncText, { color: "#10b981" }]}>
+                      Zsynchronizowano
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={[styles.syncBadge, styles.syncBadgeOffline]}>
+                    <Ionicons name="cloud-offline" size={12} color="#f59e0b" />
+                    <Text style={[styles.syncText, { color: "#d97706" }]}>
+                      Oczekiwanie (Offline)
+                    </Text>
+                  </View>
+                )}
+              </View>
             </View>
             <View style={styles.cardAmount}>
               <Text style={styles.cardPrice}>
@@ -206,5 +224,25 @@ const styles = StyleSheet.create({
     shadowColor: "#2563eb",
     shadowOpacity: 0.3,
     shadowRadius: 10,
+  },
+  syncContainer: {
+    flexDirection: "row",
+    marginTop: 6,
+  },
+  syncBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0fdf4",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  syncBadgeOffline: {
+    backgroundColor: "#fffbeb",
+  },
+  syncText: {
+    fontSize: 10,
+    fontWeight: "600",
+    marginLeft: 4,
   },
 });

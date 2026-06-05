@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -16,6 +16,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { setGuestMode } from "./_layout";
 
 export default function AuthScreen() {
   const [email, setEmail] = useState("");
@@ -24,6 +25,22 @@ export default function AuthScreen() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    async function checkExistingSession() {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session) {
+          router.replace("/(tabs)");
+        }
+      } catch (error) {
+        console.log("Brak aktywnej sesji w pamięci podręcznej urządzenia.");
+      }
+    }
+    checkExistingSession();
+  }, []);
 
   async function handleAuth() {
     if (!email || !password) {
@@ -42,13 +59,29 @@ export default function AuthScreen() {
         email,
         password,
       });
-      if (error) Alert.alert("Błąd logowania", error.message);
-      else {
+      if (error) {
+        if (error.message.includes("Network request failed")) {
+          Alert.alert(
+            "Brak połączenia",
+            "Nie można zweryfikować hasła. Spróbuj zalogować się później lub skorzystaj z Trybu Gościa.",
+          );
+        } else {
+          Alert.alert("Błąd logowania", error.message);
+        }
+      } else {
         router.replace("/(tabs)");
       }
     }
     setLoading(false);
   }
+
+  const handleContinueAsGuest = () => {
+    Keyboard.dismiss();
+    setLoading(false);
+    setGuestMode(true);
+    router.replace("/(tabs)");
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -137,6 +170,21 @@ export default function AuthScreen() {
                   : "Nie masz konta? Zarejestruj się"}
               </Text>
             </TouchableOpacity>
+
+            <View style={styles.dividerContainer}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>LUB</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <TouchableOpacity
+              style={styles.guestButton}
+              onPress={handleContinueAsGuest}
+            >
+              <Text style={styles.guestButtonText}>
+                Kontynuuj offline (Tryb Gościa)
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
@@ -154,7 +202,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  header: { alignItems: "center", marginBottom: 40 },
+  header: { alignItems: "center", marginBottom: 30 },
   title: { fontSize: 32, fontWeight: "bold", color: "#1e293b", marginTop: 10 },
   subtitle: { fontSize: 16, color: "#64748b" },
   card: {
@@ -192,7 +240,7 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: { backgroundColor: "#93c5fd" },
   buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-  switchButton: { marginTop: 20, alignItems: "center" },
+  switchButton: { marginTop: 15, alignItems: "center" },
   switchText: { color: "#2563eb", fontSize: 14, fontWeight: "500" },
   passwordInput: {
     flex: 1,
@@ -202,5 +250,35 @@ const styles = StyleSheet.create({
   },
   eyeButton: {
     padding: 4,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#cbd5e1",
+  },
+  dividerText: {
+    marginHorizontal: 10,
+    color: "#64748b",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  guestButton: {
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#cbd5e1",
+    borderStyle: "dashed",
+  },
+  guestButtonText: {
+    color: "#475569",
+    fontSize: 15,
+    fontWeight: "600",
   },
 });

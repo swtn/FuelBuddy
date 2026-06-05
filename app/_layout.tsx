@@ -4,6 +4,12 @@ import { Session } from "@supabase/supabase-js";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 
+let isGuestMode = false;
+
+export function setGuestMode(value: boolean) {
+  isGuestMode = value;
+}
+
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null);
   const [initialized, setInitialized] = useState(false);
@@ -19,6 +25,9 @@ export default function RootLayout() {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
+        if (session) {
+          isGuestMode = false;
+        }
       },
     );
 
@@ -34,7 +43,7 @@ export default function RootLayout() {
 
     if (session && isPublicRoute) {
       router.replace("/(tabs)");
-    } else if (!session && !isPublicRoute) {
+    } else if (!session && !isPublicRoute && !isGuestMode) {
       router.replace("/auth");
     }
   }, [session, initialized, segments]);

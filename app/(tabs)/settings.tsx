@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -9,30 +10,53 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { setGuestMode } from "../_layout";
 
 export default function SettingScreen() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setUserEmail(user.email ?? null);
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        if (error) throw error;
+
+        if (session?.user) {
+          setUserEmail(session.user.email ?? "Użytkownik zalogowany");
+        } else {
+          setUserEmail("Tryb Gościa (Offline)");
+        }
+      } catch (error) {
+        console.log("Błąd pobierania profilu (prawdopodobnie offline):", error);
+        setUserEmail("Tryb offline");
       }
     }
+    fetchUser();
   }, []);
 
   const handleLogout = () => {
-    Alert.alert("Wylogowywane", "Czy na pewno chcesz się wylogować", [
+    Alert.alert("Wylogowywanie", "Czy na pewno chcesz się wylogować?", [
       { text: "Anuluj", style: "cancel" },
       {
         text: "Wyloguj",
         style: "destructive",
         onPress: async () => {
           try {
-            await supabase.auth.signOut();
+            const {
+              data: { session },
+            } = await supabase.auth.getSession();
+
+            if (session) {
+              await supabase.auth.signOut();
+            } else {
+              setGuestMode(false);
+              router.replace("/auth");
+            }
           } catch (error) {
             Alert.alert("Błąd", "Nie udało się wylogować. Spróbuj ponownie");
           }
@@ -56,6 +80,7 @@ export default function SettingScreen() {
       [{ text: "Akceptuję" }],
     );
   };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.headerTitle}>Ustawienia</Text>
