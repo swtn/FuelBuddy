@@ -166,10 +166,6 @@ Kod źródłowy projektu został zaprojektowany z naciskiem na elastyczność i 
 
 - DLACZEGO? W formularzach logowania (auth.tsx) oraz dodawania transakcji (modal.tsx) zachowanie komponentu unikania klawiatury jest uzależnione od systemu operacyjnego za pomocą warunku Platform.OS === 'ios' ? 'padding' : 'height'. Silniki renderujące systemów iOS i Android zupełnie inaczej kalkulują przestrzeń roboczą okna. To podejście zapobiega tzw. "podwójnemu skakaniu" inputów i zapewnia, że aktywne pole tekstowe plasuje się zawsze dokładnie 15-20 pikseli nad klawiaturą, niezależnie od wielkości ekranu smartfona.
 
-🔴 Izolacja sieciowa zapytań Overpass API (app/(tabs)/map.tsx)
-
-- DLACZEGO? W celu uniknięcia płatnych kluczy Google Places, dane o stacjach paliw są pobierane na żywo z serwerów OpenStreetMap za pomocą zapytania języka Overpass QL. Publiczne serwery bywają jednak przeciążone i w momentach szczytowych zwracają kod błędu w formacie HTML zamiast JSON. Wprowadzona walidacja nagłówka odpowiedzi (contentType.includes("application/json")) przechwytuje te awarie w bloku catch i zamienia je na bezpieczne ostrzeżenia wizualne (console.warn / baner w UI), dzięki czemu awaria zewnętrznej sieci nie powoduje krytycznego błędu całego interfejsu (crash aplikacji).
-
 Lista Funkcjonalności
 
 1. System Autentykacji: Rejestracja i logowanie użytkowników, zabezpieczenie tras przed niezalogowanymi, opcja podglądu hasła.
